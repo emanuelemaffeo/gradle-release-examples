@@ -11,7 +11,7 @@ plugins {
     id 'idea'
 }
 
-allprojects {
+subprojects {
     apply plugin: 'java'
     apply plugin: 'net.researchgate.release'
 
