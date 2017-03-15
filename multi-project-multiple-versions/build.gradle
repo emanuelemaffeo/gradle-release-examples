@@ -14,6 +14,40 @@ plugins {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'net.researchgate.release'
+    apply plugin: 'maven-publish'
+    apply plugin: 'maven'
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://lab.liquidprice.io:10101/repository/waterdata/" }
+    }
+
+    if (!project.hasProperty("nexusUsername")) {
+        ext.nexusUsername = ""
+    }
+    if (!project.hasProperty("nexusPassword")) {
+        ext.nexusPassword = ""
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+            }
+        }
+        repositories {
+            maven {
+                url 'http://lab.liquidprice.io:10101/repository/waterdata/'
+                credentials {
+                    username nexusUsername
+                    password nexusPassword
+                }
+            }
+        }
+    }
 
     repositories {
         jcenter()
@@ -36,7 +70,7 @@ subprojects {
     }
 
     beforeReleaseBuild.dependsOn startmessage
-    afterReleaseBuild.dependsOn printversion
+    afterReleaseBuild.dependsOn publish
 }
 
 wrapper.gradleVersion = '2.7'
